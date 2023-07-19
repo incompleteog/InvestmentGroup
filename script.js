@@ -1,19 +1,9 @@
-const apiUrl = 'https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/search/?query=';
-const weatherUrl = 'https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/';
+const weatherApiUrl = 'https://api.openweathermap.org/data/2.5/weather';
 
 async function getWeatherData(city) {
-    const locationResponse = await fetch(`${apiUrl}${city}`);
-    const locationData = await locationResponse.json();
-    
-    if (locationData.length === 0) {
-        throw new Error('City not found.');
-    }
-
-    const woeid = locationData[0].woeid;
-    const weatherResponse = await fetch(`${weatherUrl}${woeid}/`);
-    const weatherData = await weatherResponse.json();
-
-    return weatherData;
+    const response = await fetch(`${weatherApiUrl}?q=${city}&units=metric`);
+    const data = await response.json();
+    return data;
 }
 
 function displayWeatherData(data) {
@@ -21,9 +11,9 @@ function displayWeatherData(data) {
     const temperatureElement = document.getElementById('temperature');
     const descriptionElement = document.getElementById('description');
 
-    const location = data.title;
-    const temperature = data.consolidated_weather[0].the_temp.toFixed(1) + ' °C';
-    const description = data.consolidated_weather[0].weather_state_name;
+    const location = data.name + ', ' + data.sys.country;
+    const temperature = data.main.temp + ' °C';
+    const description = data.weather[0].description;
 
     locationElement.textContent = `Location: ${location}`;
     temperatureElement.textContent = `Temperature: ${temperature}`;
@@ -37,11 +27,11 @@ function showError(message) {
 }
 
 function init() {
-    const city = 'London'; // Replace 'YOUR_CITY_NAME' with the desired city name
+    const city = 'YOUR_CITY_NAME'; // Replace 'YOUR_CITY_NAME' with the desired city name
     getWeatherData(city)
         .then(displayWeatherData)
         .catch((error) => {
-            showError(error.message || 'Failed to fetch weather data.');
+            showError('Failed to fetch weather data.');
             console.error(error);
         });
 }
