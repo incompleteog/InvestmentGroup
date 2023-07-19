@@ -27,7 +27,7 @@ function showError(message) {
 }
 
 function init() {
-    const city = 'YOUR_CITY_NAME'; // Replace 'YOUR_CITY_NAME' with the desired city name
+    const city = 'London'; // Replace 'YOUR_CITY_NAME' with the desired city name
     getWeatherData(city)
         .then(displayWeatherData)
         .catch((error) => {
